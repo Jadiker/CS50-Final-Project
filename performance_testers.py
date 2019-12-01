@@ -117,6 +117,7 @@ if __name__ == "__main__":
     start_game = Otrio()
     # p1 = HumanPlayer()
     p1 = AdvisedMonteCarloPlayer(2, 2, 2)
+    # decent player
     p2 = BasicMonteCarloPlayer(5, 2)
 
     '''
