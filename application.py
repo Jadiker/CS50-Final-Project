@@ -117,6 +117,7 @@ def instructionspage():
 
 
 if __name__ == "__main__":
-    app.run(host=os.getenv('IP', '0.0.0.0'), port=int(os.getenv('PORT', 8080)))  # used to run on Cloud9
+    # app.run(host=os.getenv('IP', '0.0.0.0'), port=int(os.getenv('PORT', 8080)))  # used to run on Cloud9
     # running on Heroku does not work yet because it looks like the global bot doesn't stay the same when hosted
     #app.run(threaded=True)  # used to run on heroku
+    app.run(debug=False, port=5001) # used to run locally

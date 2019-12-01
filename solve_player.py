@@ -28,6 +28,6 @@ class SolvePlayer(Player):
             self.memory.update(complete_minimax(game, -1, self.my_eval))
             # try again
             self.make_move(game)
-    
+
     def __str__(self):
         return "<SolvePlayer object>"
