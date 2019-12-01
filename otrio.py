@@ -25,17 +25,6 @@ class Slot:
     def make_move(self, move, player):
         self.slots[move] = player
 
-    def nice_str(self):
-        '''Returns a string that is three digits. Relies on the fact that players are numbers.
-        0 is empty, 1 is player 0, and 2 is player 1'''
-        ans = ""
-        for slot in self.slots:
-            if slot is None:
-                ans += "0"
-            else:
-                ans += str(int(slot) + 1)
-        return ans
-
     def check_slot(self, number):
         return self.slots[number]
 
@@ -44,6 +33,28 @@ class Slot:
 
 class Otrio(Game):
     def __str__(self):
+        def slot_str(slot):
+            '''Returns a string that is three digits. Relies on the fact that players are numbers.
+            0 is empty, 1 is player 0, and 2 is player 1'''
+            ans = ""
+            for slot_index in [0, 1, 2]:
+                slot_value = slot.check_slot(slot_index)
+                if slot_value is None:
+                    ans += "0"
+                else:
+                    ans += str(int(slot_value) + 1)
+            return ans
+
+        ans = ""
+        line = "-" * 11  + "\n"
+        ans += line
+        for slot_index, slot in enumerate(self.state):
+            ans += slot_str(slot) + " "
+            if slot_index % 3 == 2:
+                ans += "\n"
+        ans += line
+        return ans[:-1] # cutoff the last newline
+
         return str([slot.nice_str() for slot in self.state])
 
     def get_initial_state(self):
@@ -53,6 +64,7 @@ class Otrio(Game):
         ans = []
         for slot_index in range(9):
             ans.append(Slot())
+        ans[4].make_move(1, 2) # put the blocker in the middle
         return ans
 
     def get_state_hash(self):
