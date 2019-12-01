@@ -16,7 +16,7 @@ class BasicMonteCarloPlayer(Player):
         self.depth = depth
         # different rewards depending on which player number the player is in the game
         self.rewards = rewards
-    
+
     def make_move(self, game):
         # Assumes it is making a move on its own turn
         poss_moves = game.get_possible_moves()
@@ -26,11 +26,11 @@ class BasicMonteCarloPlayer(Player):
             test_game = game.get_copy()
             test_game.make_move(move)
             test_games.append(test_game)
-            
+
         # from https://stackoverflow.com/questions/6618515/sorting-list-based-on-values-from-another-list
         # Sort the moves based on a Monte Carlo evaluation
         scores = [monte_carlo_eval(test_game, player_number=game.active_player, rewards=self.rewards,
-                                   simulation_amount=self.simulation_amount, depth=self.depth).value 
+                                   simulation_amount=self.simulation_amount, depth=self.depth).value
                   for test_game in test_games]
-                  
+
         game.make_move(max(zip(scores, poss_moves))[1])

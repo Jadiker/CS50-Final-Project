@@ -44,7 +44,7 @@ class Slot:
 
 class Otrio(Game):
     def __str__(self):
-        return str([str(slot) for slot in self.state])
+        return str([slot.nice_str() for slot in self.state])
 
     def get_initial_state(self):
         '''Return the initial state of the game.
@@ -136,7 +136,7 @@ class Otrio(Game):
                 # check for same-piece wins
                 for piece_size in [0, 1, 2]:
                     possible_winner = self.state[first_slot_index].check_slot(piece_size)
-                    if possible_winner and self.state[middle_slot_index].check_slot(piece_size) == possible_winner and self.state[last_slot_index].check_slot(piece_size) == possible_winner:
+                    if possible_winner is not None and self.state[middle_slot_index].check_slot(piece_size) == possible_winner and self.state[last_slot_index].check_slot(piece_size) == possible_winner:
                         return possible_winner
         if tie:
             return -1
@@ -149,8 +149,8 @@ if __name__ == "__main__":
     print(minigame)
     minigame.make_move([0, 0])
     minigame.make_move([1, 1])
-    minigame.make_move([1, 1])
+    minigame.make_move([3, 0])
     minigame.make_move([1, 0])
-    minigame.make_move([2, 2])
+    minigame.make_move([6, 0])
     print(minigame)
     print(minigame.who_won())

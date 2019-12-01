@@ -32,7 +32,6 @@ class AdvisedMonteCarloPlayer(Player):
                                                                  self.pe_depth - 1, self.pe_rewards)
 
         # the monte carlo evaluation function
-
         self.mc_func = lambda game, player_number: monte_carlo_eval(game, player_number, rewards=self.mc_rewards,
                                                                     simulation_amount=self.mc_simulation_amount, depth=self.mc_depth,
                                                                     main_player=self.sim_main_player, opponent=self.sim_opponent)

@@ -107,12 +107,14 @@ if __name__ == "__main__":
     '''
     from tic_tac_toe import TicTacToe
     from connect_four import ConnectFour
+    from otrio import Otrio
     from players import RandomPlayer, HumanPlayer
     from advised_monte_carlo_player import AdvisedMonteCarloPlayer
     from basic_monte_carlo_player import BasicMonteCarloPlayer
     from solve_player import SolvePlayer
     from sizeable_connect_x import SizeableConnectX
-    start_game = SizeableConnectX(4, 4, 4)
+    # start_game = SizeableConnectX(4, 4, 4)
+    start_game = Otrio()
     p1 = HumanPlayer()
     p2 = BasicMonteCarloPlayer(5, 2)
 
