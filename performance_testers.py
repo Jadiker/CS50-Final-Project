@@ -21,7 +21,7 @@ def test_against(players, start_game, game_parameters=None, rounds=50, games_per
     comment: how verbose the print statements are; higher integers give more print statements
     pct_increment: how much the percentage should increase by when it prints out
     '''
-    
+
 
     # default to values for each list that will be overridden
     lows = [games_per_round + 1] * 3
@@ -32,7 +32,7 @@ def test_against(players, start_game, game_parameters=None, rounds=50, games_per
         for game_num in range(games_per_round):
             if comment > 3:
                 print("Testing game {}/{}".format((game_num + 1), games_per_round))
-            
+
             # set up the game from the start_game
             if randomize_first_player:
                 # randomize who goes first
@@ -52,7 +52,7 @@ def test_against(players, start_game, game_parameters=None, rounds=50, games_per
             else:
                 # not randomizing the first player, so we can just copy the starting game
                 game = start_game.get_copy()
-                
+
             while game.who_won() is None:
                 players[game.active_player].make_move(game)
                 if comment > 5:
@@ -95,13 +95,13 @@ if __name__ == "__main__":
     '''
     '''
     These are some notes about how good different players were against each other:
-    
+
     # significant difference: 74 - 15, no ties.
     # test_against((BasicMonteCarloPlayer(30, 1), BasicMonteCarloPlayer(30)), ConnectFour, 100, 100, comment=4)
-    
+
     # no significant difference: 29 - 28 - 2
     # test_against((BasicMonteCarloPlayer(40, 1), BasicMonteCarloPlayer(30, 1)), ConnectFour, 1, 100, comment=4)
-    
+
     # significant: 71 - 6 - 2 (Mainly lost when it had a perfect trap set up that was blocked by an opponent, then it gave up easy wins; should be fixed with minimax)
     # test_against((BasicMonteCarloPlayer(5, 3), BasicMonteCarloPlayer(30)), ConnectFour, 1, 100, comment=6)
     '''
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     start_game = SizeableConnectX(4, 4, 4)
     p1 = HumanPlayer()
     p2 = BasicMonteCarloPlayer(5, 2)
-    
+
     '''
     # Create a player that solves the game
     s = SolvePlayer()
@@ -124,6 +124,6 @@ if __name__ == "__main__":
     print("Solved!")
     p2 = s
     '''
-    
+
     # Test how good the human player is against the perfect tic-tac-toe player
     test_against((p1, p2), start_game, 10, 100, comment=6)

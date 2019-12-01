@@ -1,6 +1,5 @@
 # by London Lowmanstone (from high school)
 
-
 def print_percent(index_number, out_of, increment_amt=1, round_amt=0):
     '''Prints the progress through a loop.
 
