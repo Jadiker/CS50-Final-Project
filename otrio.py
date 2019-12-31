@@ -1,6 +1,7 @@
 from game import Game
 
-SKIP_MOVE = [[-1, -1]]
+SKIP_MOVE = [-1, -1]
+SKIP_MOVES = [SKIP_MOVE]
 
 class Slot:
     def __init__(self, slots=None):
@@ -96,7 +97,7 @@ class Otrio(Game):
                     ans.append([slot_index, open_slot])
         if not ans:
             # there are no moves available, so you can skip your turn
-            ans = SKIP_MOVE
+            ans = SKIP_MOVES
         return ans
 
     def make_move(self, action):
@@ -161,13 +162,13 @@ class Otrio(Game):
 
         # check for a tie
         possible_moves = self.get_possible_moves()
-        if possible_moves == SKIP_MOVE:
+        if possible_moves == SKIP_MOVES:
             self.active_player = Game.get_other_player(self.active_player)
             # see if the other player has any moves they can make
             possible_moves = self.get_possible_moves()
             # switch the player back to normal
             self.active_player = Game.get_other_player(self.active_player)
-            if possible_moves == SKIP_MOVE:
+            if possible_moves == SKIP_MOVES:
                 # Nobody can move - it's a tie
                 return -1
 
