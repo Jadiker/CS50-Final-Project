@@ -10,7 +10,7 @@ class AdvisedMonteCarloPlayer(Player):
     '''
 
     # TODO update to use a non-winner-reward evaluator
-    def __init__(self, mc_simulation_amount, mc_depth, pe_depth, mc_rewards=(1, -1, .5), pe_rewards=(2, -2, .9, 0, 0), main_player=RandomPlayer(), opponent=RandomPlayer()):
+    def __init__(self, mc_simulation_amount, mc_depth, pe_depth, mc_evaluator=WinnerRewardEvaluator((1, -1, .5)), pe_rewards=(2, -2, .9, 0, 0), main_player=RandomPlayer(), opponent=RandomPlayer()):
         '''
         mc is short for "MonteCarlo"
         mc_simulation_amount: how many times the monte carlo evaluator should simulate each end position
@@ -23,8 +23,8 @@ class AdvisedMonteCarloPlayer(Player):
         '''
         self.mc_simulation_amount = mc_simulation_amount
         self.mc_depth = mc_depth
-        self.mc_rewards = mc_rewards
         self.pe_depth = pe_depth
+        self.mc_evaluator = mc_evaluator
         self.pe_rewards = pe_rewards
         self.sim_main_player = main_player
         self.sim_opponent = opponent
@@ -34,7 +34,7 @@ class AdvisedMonteCarloPlayer(Player):
                                                                  self.pe_depth - 1, self.pe_rewards)
 
         # the monte carlo evaluation function
-        self.mc_func = lambda game, player_number: monte_carlo_eval(game, player_number, WinnerRewardEvaluator(self.mc_rewards),
+        self.mc_func = lambda game, player_number: monte_carlo_eval(game, player_number, self.mc_evaluator,
                                                                     move_amount=-1, simulation_amount=self.mc_simulation_amount,
                                                                     depth=self.mc_depth, main_player=self.sim_main_player,
                                                                     opponent=self.sim_opponent)

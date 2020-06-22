@@ -115,8 +115,8 @@ if __name__ == "__main__":
     from sizeable_connect_x import SizeableConnectX
     start_game = SizeableConnectX(4, 4, 4)
     # start_game = Otrio()
-    p1 = HumanPlayer()
-    # p1 = AdvisedMonteCarloPlayer(2, 2, 2)
+    # p1 = HumanPlayer()
+    p1 = AdvisedMonteCarloPlayer(2, 2, 2)
     # decent player
     p2 = BasicMonteCarloPlayer(5, 2)
 
@@ -129,5 +129,5 @@ if __name__ == "__main__":
     p2 = s
     '''
 
-    # Test how good the human player is against the perfect tic-tac-toe player
+    # Test how good player 1 is against player 2
     test_against((p1, p2), start_game, 10, 100, comment=6)
