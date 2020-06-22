@@ -10,18 +10,6 @@ class MonteCarloEvaluation(Evaluation):
     def __str__(self):
         return "MonteCarloEvaluation object with value: {} from {} simulations".format(self.value, self.simulations)
 
-
-def unsure_monte_carlo_eval(game, player_number, unsure_rewards=[1, -1, .5], sure_rewards=[2, -2, 1.5], main_player=RandomPlayer(), simulation_amount=5, depth=0, opponent=RandomPlayer()):
-    '''Evalutates a game from player 0's perspective'''
-    winner = game.who_won()
-    if winner is None:
-        # game is not complete
-        return monte_carlo_eval(game, player_number, main_player, unsure_rewards, simulation_amount, depth, opponent)
-    else:
-        # game is complete
-        return Evaluation(sure_rewards[winner])
-
-
 def monte_carlo_eval(original_game, player_number, main_player=RandomPlayer(), rewards=(1, -1, .5), simulation_amount=100, depth=0, opponent=RandomPlayer()):
     '''Returns a MonteCarloEvaluation object
     Plays random games from the given game position and averages the results

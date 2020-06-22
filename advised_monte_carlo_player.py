@@ -60,9 +60,5 @@ if __name__ == "__main__":
     from players import RandomPlayer, HumanPlayer
     from basic_monte_carlo_player import BasicMonteCarloPlayer
 
-    # With my_index = complete_minimax(game, 4, my_eval) and my_eval = unsure_monte_carlo_eval(game, player_number, simulation_amount=3)
-    # Score 0 - 2 - 0. It's bad and slow. Not a good combo.
-    # test_against((IndexPlayer(my_index), BasicMonteCarloPlayer(5, 2)), ConnectFour, comment=6)
-
     test_against((AdvisedMonteCarloPlayer(6, 2, 6),
                   AdvisedMonteCarloPlayer(5, 2, 4)), ConnectFour, comment=6)
