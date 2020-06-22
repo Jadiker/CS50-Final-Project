@@ -1,6 +1,7 @@
 from position_eval import position_eval
 from monte_carlo_evaluation import monte_carlo_eval
 from players import Player, RandomPlayer
+from evaluation import WinnerRewardEvaluator
 
 
 class AdvisedMonteCarloPlayer(Player):
@@ -8,6 +9,7 @@ class AdvisedMonteCarloPlayer(Player):
     A basic monte carlo player that takes certain wins and ties and avoids certain
     '''
 
+    # TODO update to use a non-winner-reward evaluator
     def __init__(self, mc_simulation_amount, mc_depth, pe_depth, mc_rewards=(1, -1, .5), pe_rewards=(2, -2, .9, 0, 0), main_player=RandomPlayer(), opponent=RandomPlayer()):
         '''
         mc is short for "MonteCarlo"
@@ -32,9 +34,10 @@ class AdvisedMonteCarloPlayer(Player):
                                                                  self.pe_depth - 1, self.pe_rewards)
 
         # the monte carlo evaluation function
-        self.mc_func = lambda game, player_number: monte_carlo_eval(game, player_number, rewards=self.mc_rewards,
-                                                                    simulation_amount=self.mc_simulation_amount, depth=self.mc_depth,
-                                                                    main_player=self.sim_main_player, opponent=self.sim_opponent)
+        self.mc_func = lambda game, player_number: monte_carlo_eval(game, player_number, WinnerRewardEvaluator(self.mc_rewards),
+                                                                    move_amount=-1, simulation_amount=self.mc_simulation_amount,
+                                                                    depth=self.mc_depth, main_player=self.sim_main_player,
+                                                                    opponent=self.sim_opponent)
 
     def make_move(self, game):
         main_player = game.active_player

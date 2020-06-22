@@ -9,6 +9,7 @@ You can try playing against a BasicMonteCarloPlayer(5, 2) and see how it works!
 
 from players import Player, RandomPlayer
 from monte_carlo_evaluation import monte_carlo_eval
+from evaluation import WinnerRewardEvaluator
 
 class BasicMonteCarloPlayer(Player):
     def __init__(self, simulation_amount, depth=0, rewards=(1, -1, .5)):
@@ -29,8 +30,8 @@ class BasicMonteCarloPlayer(Player):
 
         # from https://stackoverflow.com/questions/6618515/sorting-list-based-on-values-from-another-list
         # Sort the moves based on a Monte Carlo evaluation
-        scores = [monte_carlo_eval(test_game, player_number=game.active_player, rewards=self.rewards,
-                                   simulation_amount=self.simulation_amount, depth=self.depth).value
+        scores = [monte_carlo_eval(test_game, player_number=game.active_player, evaluator=WinnerRewardEvaluator(self.rewards),
+                                   move_amount=-1, simulation_amount=self.simulation_amount, depth=self.depth).value
                   for test_game in test_games]
 
         game.make_move(max(zip(scores, poss_moves))[1])

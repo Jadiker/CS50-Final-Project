@@ -113,10 +113,10 @@ if __name__ == "__main__":
     from basic_monte_carlo_player import BasicMonteCarloPlayer
     from solve_player import SolvePlayer
     from sizeable_connect_x import SizeableConnectX
-    # start_game = SizeableConnectX(4, 4, 4)
-    start_game = Otrio()
-    # p1 = HumanPlayer()
-    p1 = AdvisedMonteCarloPlayer(2, 2, 2)
+    start_game = SizeableConnectX(4, 4, 4)
+    # start_game = Otrio()
+    p1 = HumanPlayer()
+    # p1 = AdvisedMonteCarloPlayer(2, 2, 2)
     # decent player
     p2 = BasicMonteCarloPlayer(5, 2)
 

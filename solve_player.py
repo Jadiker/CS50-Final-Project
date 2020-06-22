@@ -1,7 +1,6 @@
 from players import Player
 from minimax import complete_minimax
-from evaluation import simple_eval
-
+from evaluation import get_winner_reward
 
 class SolvePlayer(Player):
     def __init__(self):
@@ -12,7 +11,7 @@ class SolvePlayer(Player):
         self.my_eval is a customized simple evaluation function to tell if a game is a win, loss, or tie
         '''
         self.memory = {}
-        self.my_eval = lambda game, player_number: simple_eval(game, player_number, [1, -1, 0])
+        self.my_eval = lambda game, player_number: get_winner_reward(game, player_number, [1, -1, 0])
 
     def make_move(self, game):
         '''Makes a logically best move possible in a game.

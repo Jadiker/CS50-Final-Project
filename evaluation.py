@@ -9,15 +9,29 @@ class Evaluation:
         return "<Evaluation object of value: {}>".format(self.value)
 
 
-def simple_eval(game, player_number, rewards):
-    '''Evaluates an end game'''
-    return winner_eval(game.who_won(), player_number, rewards)
+class Evaluator:
+    def evaluate(self, game, player_number):
+        '''
+        Evaluates a game for a particular player. Returns an Evaluation.
+        Should not modify the game itself in the evaluation.
+        '''
+        raise NotImplementedError
 
 
-def winner_eval(winner_number, player_number, rewards):
+class WinnerRewardEvaluator(Evaluator):
+    '''Evaluates based on the winner and the given reward list'''
+    def __init__(self, rewards):
+        '''Rewards are in the form (win reward, loss reward, tie reward)'''
+        self.rewards = rewards
+
+    def evaluate(self, game, player_number):
+        return Evaluation(get_winner_reward(game.who_won(), player_number, self.rewards))
+
+
+def get_winner_reward(winner_number, player_number, rewards):
     '''Computes the reward based on who won and who the player is'''
     if winner_number is None:
-        return Evaluation(None)
+        return None
     else:
         if player_number == 0:
             player_rewards = rewards
@@ -25,4 +39,4 @@ def winner_eval(winner_number, player_number, rewards):
             # flip the rewards so the index of the winning player will give the correct result
             player_rewards = (rewards[1], rewards[0], rewards[2])
 
-        return Evaluation(player_rewards[winner_number])
+        return player_rewards[winner_number]
