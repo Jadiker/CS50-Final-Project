@@ -34,7 +34,7 @@ class HumanPlayer(Player):
 
     Assumes that the game implements a __str__ method that prints out something human-understandable.
     '''
-    def __init__(self, move_to_string=str):
+    def __init__(self, move_to_string=lambda move, game: str(move)):
         '''Takes a function that turns a move object into a string that the user can understand
         This function should take the parameters self.move_to_string(move, game)'''
         self.move_to_string = move_to_string

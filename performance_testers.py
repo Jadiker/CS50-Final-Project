@@ -125,9 +125,10 @@ if __name__ == "__main__":
     # p1 = HumanPlayer()
     # p1 = AdvisedMonteCarloPlayer(2, 2, 2)
     # p1 = BasicMonteCarloPlayer()
+    # p1 = RandomPlayer()
 
     # player 2
-    p2 = BasicMonteCarloPlayer(5, 0, 4, PawnCountingEvaluator())
+    p2 = BasicMonteCarloPlayer(5, 2, 4, PawnCountingEvaluator())
     # p2 = BasicMonteCarloPlayer(5, 2)
     # p2 = RandomPlayer()
 

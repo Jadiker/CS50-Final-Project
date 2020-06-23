@@ -114,8 +114,34 @@ class State:
         ans = ""
         ans += "Board:\n"
 
+        def get_symbol(pawn):
+            if pawn.player == 0:
+                symbol = "r"
+            else:
+                symbol = "b"
+            if pawn.style == SENSEI_STYLE:
+                symbol = symbol.upper()
+            return symbol
+
+        def position_to_index(position):
+            row = 5 - position[1]
+            column = position[0] - 1
+            return (row, column)
+
+        display_board = []
+        for row_index in range(5):
+            display_board.append(["."] * 5)
+
         for position, pawn in self.board.items():
-            ans += f"{position}: {str(pawn)}\n"
+            row_index, column_index = position_to_index(position)
+            symbol = get_symbol(pawn)
+            display_board[row_index][column_index] = symbol
+            # TODO delete
+            # ans += f"{position}: {str(pawn)}\n"
+
+        for row in display_board:
+            ans += "".join(row) + "\n"
+        # ans += str(display_board) + "\n"
 
         ans += "\nHands:"
         for player in PLAYERS:
@@ -336,8 +362,9 @@ class PawnCountingEvaluator(Evaluator):
     def evaluate(self, game, player_number):
         winner = game.who_won()
         if winner is None:
-            # return the number of pawns that player has
-            return Evaluation(len(game.state.pawns[player_number]))
+            opponent = Game.get_other_player(player_number)
+            # return the number of pawns that player has minus the number of pawns the oppponent has
+            return Evaluation(len(game.state.pawns[player_number]) - len(game.state.pawns[opponent]))
         else:
             if winner == player_number:
                 return Evaluation(self.win_loss_rewards[0])
