@@ -34,34 +34,48 @@ class HumanPlayer(Player):
 
     Assumes that the game implements a __str__ method that prints out something human-understandable.
     '''
+    def __init__(self, move_to_string=str):
+        '''Takes a function that turns a move object into a string that the user can understand'''
+        self.move_to_string = move_to_string
 
     def make_move(self, game):
         moves = game.get_possible_moves()
         print(game)
-        # keep on asking until we get a valid response
-        while True:
-            try:
-                # if all the moves are integers
-                if False not in [isinstance(move, int) for move in moves]:
-                    # print the human-numbered (starting at 1) version of those moves
-                    print("Moves:\n{}".format([move + 1 for move in moves]))
-                    # request a move
+        # if all the moves are integers
+        if False not in [isinstance(move, int) for move in moves]:
+            while True:
+                # print the human-numbered (starting at 1) version of those moves
+                print("Moves:\n{}".format([move + 1 for move in moves]))
+                # request a move
+                try:
                     move = int(input("Type the move you'd like to do: ")) - 1
                     if move not in moves:
-                        raise RuntimeError("Invalid move")
-                else:
-                    # print out a dictionary of indexes/keys the user can type and the corresponding move
-                    moves_dict = {}
-                    for i, move in enumerate(moves):
-                        moves_dict[i] = move
-                    print("Moves:\n{}".format(moves_dict))
-                    # request a move
+                        raise ValueError("Invalid user move")
+                    break
+                except ValueError:
+                    print("Sorry, that wasn't a valid choice.")
+        else:
+            # print out a dictionary of indexes/keys the user can type and the corresponding move
+            moves_dict = {}
+            for i, move in enumerate(moves):
+                try:
+                    moves_dict[i] = self.move_to_string(move)
+                except Exception:
+                    raise ValueError("Converting the move to a string failed - conversion function is incorrect")
+            while True:
+                print("Available Moves:")
+                for move_key, move_string in moves_dict.items():
+                    print(f"{move_key}: {move_string}")
+                print()
+                # request a move
+                try:
                     index = int(input("Type the index of the move you'd like to do: "))
-                    # get the move from the dictionary
-                    move = moves_dict[index]
-                # make the move
-                game.make_move(move)
-                break
-            except Exception:
-                # tell the user their input was invalid and re-run the loop
-                print("Sorry, that didn't work.")
+                    move = moves[index]
+                    break
+                except (ValueError, IndexError):
+                    print("Sorry, that wasn't a valid move choice. Please type the number of the move  you'd like to make.\n")
+
+
+        # make the move
+        game.make_move(move)
+        print("Move made!")

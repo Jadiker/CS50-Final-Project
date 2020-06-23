@@ -113,12 +113,17 @@ if __name__ == "__main__":
     from basic_monte_carlo_player import BasicMonteCarloPlayer
     from solve_player import SolvePlayer
     from sizeable_connect_x import SizeableConnectX
-    start_game = SizeableConnectX(4, 4, 4)
+    from onitama import Onitama
+    from onitama import move_to_string as onitama_move_to_string
+    # start_game = SizeableConnectX(4, 4, 4)
     # start_game = Otrio()
+    start_game = Onitama()
+    p1 = HumanPlayer(onitama_move_to_string)
     # p1 = HumanPlayer()
-    p1 = AdvisedMonteCarloPlayer(2, 2, 2)
+    # p1 = AdvisedMonteCarloPlayer(2, 2, 2)
     # decent player
-    p2 = BasicMonteCarloPlayer(5, 2)
+    # p2 = BasicMonteCarloPlayer(5, 2)
+    p2 = RandomPlayer()
 
     '''
     # Create a player that solves the game
