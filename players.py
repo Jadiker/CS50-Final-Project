@@ -35,7 +35,8 @@ class HumanPlayer(Player):
     Assumes that the game implements a __str__ method that prints out something human-understandable.
     '''
     def __init__(self, move_to_string=str):
-        '''Takes a function that turns a move object into a string that the user can understand'''
+        '''Takes a function that turns a move object into a string that the user can understand
+        This function should take the parameters self.move_to_string(move, game)'''
         self.move_to_string = move_to_string
 
     def make_move(self, game):
@@ -59,7 +60,7 @@ class HumanPlayer(Player):
             moves_dict = {}
             for i, move in enumerate(moves):
                 try:
-                    moves_dict[i] = self.move_to_string(move)
+                    moves_dict[i] = self.move_to_string(move, game)
                 except Exception:
                     raise ValueError("Converting the move to a string failed - conversion function is incorrect")
             while True:

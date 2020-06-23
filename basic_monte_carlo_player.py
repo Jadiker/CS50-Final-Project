@@ -29,10 +29,10 @@ class BasicMonteCarloPlayer(Player):
         # upgrade: use "game.get_moved_copy()"
         test_games = []
         # TODO delete
-        print("---------REAL BOARD BEFORE----------")
-        print(board_to_string(game.state.board))
-        print("-----REAL GAME BEFORE-----")
-        print(game)
+        # print("---------REAL BOARD BEFORE----------")
+        # print(board_to_string(game.state.board))
+        # print("-----REAL GAME BEFORE-----")
+        # print(game)
         game_string = str(game)
         for move in poss_moves:
             # TODO delete
@@ -49,7 +49,8 @@ class BasicMonteCarloPlayer(Player):
             # print(move)
             new_game_string = str(game)
             assert game_string == new_game_string, f"The game changed (without any moves being made)\n*FROM*:\n{game_string}\n\n*TO*:\n{new_game_string}"
-            print(f"The ID of the board I expect the move to be made in is:\n{id(test_game.state.board)}\n^^^that")
+            # TODO delete assertions and prints around here
+            # print(f"The ID of the board I expect the move to be made in is:\n{id(test_game.state.board)}\n^^^that")
             test_game.make_move(move)
             new_game_string = str(game)
             assert game_string == new_game_string, f"The game changed (without any moves being made)\n*FROM*:\n{game_string}\n\n*TO*:\n{new_game_string}"

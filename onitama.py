@@ -55,8 +55,7 @@ class Pawn:
         self.update_board()
 
     def __str__(self):
-        # TODO fix
-        return f"<Player {self.player}'s {self.style} pawn at {self.position} (id: {id(self)})>"
+        return f"<Player {self.player}'s {self.style} pawn at {self.position}>"
 
     def __deepcopy__(self, memo):
         return type(self)(deepcopy(self.position, memo), deepcopy(self.style, memo),
@@ -83,14 +82,20 @@ class Pawn:
                 raise InvalidMoveError
 
         captured_pawn = self.board.get(target, None)
-        if captured_pawn and captured_pawn.player == self.player:
-            raise InvalidMoveError
 
-        return target, captured_pawn
+        # convert to boolean
+        if captured_pawn:
+            capture = True
+            if captured_pawn.player == self.player:
+                raise InvalidMoveError
+        else:
+            capture = False
+
+        return target, capture
 
     def move(self, target):
         '''Move the pawn to a position on the board'''
-        print(f"PAWN with ID {id(self)} is making move in board {id(self.board)}")
+        # TODO delete
         previous_position = self.position
         self.position = target
         self.update_board(previous_position)
@@ -190,10 +195,8 @@ class Onitama(Game):
                 assert pawn.position in self.state.board, f"Pawn {pawn} disappeared from the board {board_to_string(self.state.board)}"
 
     def _assert_move(self, move):
-        card_index, card, pawn, pawn_target, captured_pawn = move
-        assert (not captured_pawn) or (self.state.board[pawn_target] == captured_pawn.position), f"The move is to {pawn_target}, but the captured pawn is at {captured_pawn.position}"
-        assert (not captured_pawn) or (captured_pawn.player != pawn.player), f"Pawn {pawn} can't capture itself"
-        assert pawn_target != pawn.position, f"The pawn {pawn} must actually move"
+        card_index, position, target, capture = move
+        assert target != position, f"The pawn must actually move from {position}"
 
     def get_copy(self):
         '''Return a copy of the object'''
@@ -215,15 +218,17 @@ class Onitama(Game):
                         # print(id(copy_pawn))
                         # print()
         assert id(copy.state.board) != id(self.state.board)
-        print("ids")
-        print(f"original: {id(self.state.board)}")
-        print(f"copy:     {id(copy.state.board)}")
+        # TODO delete
+        # print("ids")
+        # print(f"original: {id(self.state.board)}")
+        # print(f"copy:     {id(copy.state.board)}")
         return copy
 
     def get_possible_moves(self):
         '''Return a list of the possible moves that can be taken by the active player in the current state.
         Behavior is undefined when the game is complete.
-        A single move can be anything (object, string, number, etc.).
+        A single move can be anything (object, string, number, etc.),
+        ...but it must be a valid move in any copy of the game as well.
         '''
         self._assert_pawns_in_board()
         ans = []
@@ -232,10 +237,10 @@ class Onitama(Game):
             for card_move in card.moves:
                 for pawn in self.state.pawns[self.active_player]:
                     try:
-                        pawn_target, captured_pawn = pawn.check_move(card_move)
+                        pawn_target, capture = pawn.check_move(card_move)
                     except InvalidMoveError:
                         continue
-                    move = (card_index, card, pawn, pawn_target, captured_pawn)
+                    move = (card_index, pawn.position, pawn_target, capture)
                     self._assert_move(move)
                     ans.append(move)
         self._assert_pawns_in_board()
@@ -248,20 +253,19 @@ class Onitama(Game):
         Assumes the action is valid. Behavior is undefined if action is not valid.
         '''
         # TODO delete
-        print("-------- MAKING MOVE ---------")
-        print("----------BOARD----------")
-        print(f"(board id is {id(self.state.board)})")
-        print(board_to_string(self.state.board))
-        print("-----GAME:------")
-        print(self)
-        print("-------MOVE-------")
-        print(move_to_string(action))
+        # print("-------- MAKING MOVE ---------")
+        # print("----------BOARD----------")
+        # print(f"(board id is {id(self.state.board)})")
+        # print(board_to_string(self.state.board))
+        # print("-----GAME:------")
+        # print(self)
+        # print("-------MOVE-------")
+        # print(move_to_string(action))
         assert len(self.state.sensei_pawns) == 2, "Invalid move - game is already over"
         self._assert_pawns_in_board()
         self._assert_move(action)
 
-        card_index, card, pawn, pawn_target, captured_pawn = action
-        assert (not captured_pawn) or (self.state.board[pawn_target] == captured_pawn.position), f"The move is to {pawn_target}, but the captured pawn is at {captured_pawn.position}"
+        card_index, position, target, capture = action
         opponent = Game.get_other_player(self.active_player)
         active_player_hand = self.state.hands[self.active_player]
 
@@ -269,18 +273,20 @@ class Onitama(Game):
         used_card = active_player_hand.pop(card_index)
         self.state.hands[MIDDLE_CARD_INDEX] = used_card
 
-        pawn.move(pawn_target)
-        if captured_pawn:
-            assert pawn.position == captured_pawn.position, f"The pawn moved to {pawn.position}, "
+        if capture:
+            captured_pawn = self.state.board[target]
             opponent_pawns = self.state.pawns[Game.get_other_player(self.active_player)]
             removed_pawn = opponent_pawns.pop(captured_pawn.index)
             assert removed_pawn == captured_pawn, f"{removed_pawn} != {captured_pawn}"
-            for pawn in opponent_pawns[captured_pawn.index:]:
+            for opponent_pawn in opponent_pawns[captured_pawn.index:]:
                 # due to the pop, the indexes of all other pawns have been
-                pawn.index -= 1
+                opponent_pawn.index -= 1
             if captured_pawn.style == SENSEI_STYLE:
                 del self.state.sensei_pawns[opponent]
                 assert self.state.sensei_pawns, "Both sensei pawns have been removed!"
+
+        pawn = self.state.board[position]
+        pawn.move(target)
 
         self.active_player = opponent
         self._assert_pawns_in_board()
@@ -303,6 +309,24 @@ class Onitama(Game):
 
         return None
 
+    def move_to_string(self, move):
+        card_index, position, target, capture = move
+        card = self.state.hands[self.active_player][card_index]
+        pawn = self.state.board[position]
+
+        if capture:
+            captured_pawn = self.state.board[target]
+
+        if target in ENEMY_ARCH_POSITIONS:
+            arch_owner = Game.get_other_player(ENEMY_ARCH_POSITIONS.index(target))
+            target = f"Player {arch_owner}'s *arch at {target}"
+
+        ans = f"{card.name} - moving {pawn.style} pawn at {position} to {target}"
+        if capture:
+            ans += f" capturing {str(captured_pawn)[1:-1]}"
+
+        return ans
+
 
 class PawnCountingEvaluator(Evaluator):
     '''Evaluator that counts how many pawns you have left'''
@@ -320,16 +344,8 @@ class PawnCountingEvaluator(Evaluator):
             else:
                 return Evaluation(self.win_loss_rewards[1])
 
-
-def move_to_string(move):
-    card_index, card, pawn, pawn_target, captured_pawn = move
-    if pawn_target in ENEMY_ARCH_POSITIONS:
-        arch_owner = Game.get_other_player(ENEMY_ARCH_POSITIONS.index(pawn_target))
-        pawn_target = f"Player {arch_owner}'s *arch at {pawn_target}"
-    ans = f"{card.name} - moving {pawn.style} pawn at {pawn.position} to {pawn_target}"
-    if captured_pawn:
-        ans += f" capturing {str(captured_pawn)[1:-1]}"
-    return ans
+def move_to_string(move, game):
+    return game.move_to_string(move)
 
 def board_to_string(board):
     ans = "\n<Board:\n"
@@ -340,17 +356,18 @@ def board_to_string(board):
 
 
 if __name__ == "__main__":
-    game = Onitama()
-    # print(game)
-    # for move in game.get_possible_moves():
-    #     print(move_to_string(move))
-        # card_index, pawn, pawn_target, captured_pawn = move
-        # print(f"<Using {game.state.hands[game.active_player][card_index]} move {pawn} to {pawn_target} capturing {captured_pawn}>")
-        # # print(card_index, pawn, pawn_target, captured_pawn)
-
-    copy = game.get_copy()
-    for copy_pawns in copy.state.pawns.values():
-        for copy_pawn in copy_pawns:
-            print(copy_pawn)
-            assert copy_pawn not in game.state.pawns[0]
-            assert copy_pawn not in game.state.pawns[1]
+    pass
+    # game = Onitama()
+    # # print(game)
+    # # for move in game.get_possible_moves():
+    # #     print(move_to_string(move))
+    #     # card_index, pawn, pawn_target, captured_pawn = move
+    #     # print(f"<Using {game.state.hands[game.active_player][card_index]} move {pawn} to {pawn_target} capturing {captured_pawn}>")
+    #     # # print(card_index, pawn, pawn_target, captured_pawn)
+    #
+    # copy = game.get_copy()
+    # for copy_pawns in copy.state.pawns.values():
+    #     for copy_pawn in copy_pawns:
+    #         print(copy_pawn)
+    #         assert copy_pawn not in game.state.pawns[0]
+    #         assert copy_pawn not in game.state.pawns[1]
