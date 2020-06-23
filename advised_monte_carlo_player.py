@@ -19,7 +19,7 @@ class AdvisedMonteCarloPlayer(Player):
         mc_play_depth: how many moves the MonteCarlo simulation should simulate before evaluating (after looking ahead)
         ...(should be -1 to play out the entire game or at least 1 to evaluate unfinished games)
         mc_evaluator: evaluator that scores game positions
-        pe_rewards: the position evaluator rewards for (win, loss, tie, undetermined)
+        pe_rewards: the position evaluator rewards for (win, loss, you can tie, opponent can tie, undetermined)
         main_player: the player who is making the moves in the AdvisedMonteCarloPlayer's position when simulating games
         opponent: the player who is playing against the main_player when simulating games
         '''

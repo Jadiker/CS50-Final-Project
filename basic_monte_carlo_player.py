@@ -84,8 +84,8 @@ class BasicMonteCarloPlayer(Player):
         # print("zipped")
         # print(list(zip(scores, poss_moves)))
         best_score, best_move = max(zip(scores, poss_moves), key=lambda score_move_tuple: score_move_tuple[0])
-        print("best move")
-        print(best_move)
-        print(f"with score of: {best_score}")
+        # print("best move")
+        # print(best_move)
+        # print(f"with score of: {best_score}")
         assert game.who_won() is None, "Game finished without any moves being made"
         game.make_move(best_move)

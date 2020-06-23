@@ -16,7 +16,7 @@ def test_against(players, start_game, game_parameters=None, rounds=50, games_per
     start_game: an instance of a Game (or Game subclass) that the players should start at for each game they play
     rounds: the number of rounds the players will play against each other
     games_per_round: how many games are played per round
-    randomize_first_player: whether or not to randomize who goes first
+    randomize_first_player: whether or not to randomize who goes first; if False, uses the active player in the start game
     is_initial_state: whether or not the start_game is in its initial state (if False, randomizing the first player may take longer)
     comment: how verbose the print statements are; higher integers give more print statements
     pct_increment: how much the percentage should increase by when it prints out
@@ -121,16 +121,27 @@ if __name__ == "__main__":
     start_game = Onitama()
 
     # player 1
-    p1 = HumanPlayer(onitama_move_to_string)
+    # p1 = HumanPlayer(onitama_move_to_string)
     # p1 = HumanPlayer()
     # p1 = AdvisedMonteCarloPlayer(2, 2, 2)
     # p1 = BasicMonteCarloPlayer()
     # p1 = RandomPlayer()
+    # this one is a litte too aggressive to its own detriment
+    # p1 = BasicMonteCarloPlayer(5, 2, 4, PawnCountingEvaluator())
+    # too slow lol didn't realize what parameters I was putting into the BasicMonteCarloPlayer, the fact that it made any moves is amazing
+    # p1 = AdvisedMonteCarloPlayer(pe_depth=1, mc_simulation_amount=5, mc_initial_depth=2, mc_play_depth=4, mc_evaluator=PawnCountingEvaluator(), pe_rewards=(2, -2, .9, 0, 0), main_player=RandomPlayer(), opponent=BasicMonteCarloPlayer(3, 2))
+    p1 = AdvisedMonteCarloPlayer(pe_depth=1, mc_simulation_amount=5, mc_initial_depth=2, mc_play_depth=4,
+                                 mc_evaluator=PawnCountingEvaluator(),
+                                 pe_rewards=(2, -2, .9, 0, 0),
+                                 main_player=RandomPlayer(),
+                                 opponent=BasicMonteCarloPlayer(simulation_amount=3,
+                                                                initial_depth=0,
+                                                                play_depth=2,
+                                                                evaluator=PawnCountingEvaluator()))
 
     # player 2
-    p2 = BasicMonteCarloPlayer(5, 2, 4, PawnCountingEvaluator())
     # p2 = BasicMonteCarloPlayer(5, 2)
-    # p2 = RandomPlayer()
+    p2 = RandomPlayer()
 
     '''
     # Create a player that solves the game
@@ -142,4 +153,4 @@ if __name__ == "__main__":
     '''
 
     # Test how good player 1 is against player 2
-    test_against((p1, p2), start_game, 10, 100, comment=6)
+    test_against((p1, p2), start_game, rounds=10, games_per_round=100, comment=6, randomize_first_player=False)
