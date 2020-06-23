@@ -78,4 +78,4 @@ class HumanPlayer(Player):
 
         # make the move
         game.make_move(move)
-        print("Move made!")
+        print("Move made!\n")

@@ -9,20 +9,24 @@ class AdvisedMonteCarloPlayer(Player):
     A basic monte carlo player that takes certain wins and ties and avoids certain
     '''
 
-    def __init__(self, mc_simulation_amount, mc_depth, pe_depth, mc_evaluator=WinnerRewardEvaluator((1, -1, .5)), pe_rewards=(2, -2, .9, 0, 0), main_player=RandomPlayer(), opponent=RandomPlayer()):
+    def __init__(self, pe_depth, mc_simulation_amount, mc_initial_depth, mc_play_depth=-1, mc_evaluator=WinnerRewardEvaluator((1, -1, .5)), pe_rewards=(2, -2, .9, 0, 0), main_player=RandomPlayer(), opponent=RandomPlayer()):
         '''
         mc is short for "MonteCarlo"
-        mc_simulation_amount: how many times the monte carlo evaluator should simulate each end position
-        mc_depth: how many moves the MonteCarlo simulation should look ahead (should be at least 1)
+        pe is short for "Position Evaluator"
         pe_depth: how many moves the position evaluator should look ahead (should be at least 1)
-        mc_rewards: the monte carlo evaluation rewards for (win, loss, tie)
+        mc_simulation_amount: how many times the monte carlo evaluator should simulate each end position
+        mc_initial_depth: how many moves the MonteCarlo simulation should look ahead (should be at least 1)
+        mc_play_depth: how many moves the MonteCarlo simulation should simulate before evaluating (after looking ahead)
+        ...(should be -1 to play out the entire game or at least 1 to evaluate unfinished games)
+        mc_evaluator: evaluator that scores game positions
         pe_rewards: the position evaluator rewards for (win, loss, tie, undetermined)
         main_player: the player who is making the moves in the AdvisedMonteCarloPlayer's position when simulating games
         opponent: the player who is playing against the main_player when simulating games
         '''
-        self.mc_simulation_amount = mc_simulation_amount
-        self.mc_depth = mc_depth
         self.pe_depth = pe_depth
+        self.mc_simulation_amount = mc_simulation_amount
+        self.mc_initial_depth = mc_initial_depth
+        self.mc_play_depth = mc_play_depth
         self.mc_evaluator = mc_evaluator
         self.pe_rewards = pe_rewards
         self.sim_main_player = main_player
@@ -33,9 +37,11 @@ class AdvisedMonteCarloPlayer(Player):
                                                                  self.pe_depth - 1, self.pe_rewards)
 
         # the monte carlo evaluation function
-        self.mc_func = lambda game, player_number: monte_carlo_eval(game, player_number, self.mc_evaluator, move_amount=-1,
+        self.mc_func = lambda game, player_number: monte_carlo_eval(game, player_number, self.mc_evaluator,
                                                                     simulation_amount=self.mc_simulation_amount,
-                                                                    depth=self.mc_depth, main_player=self.sim_main_player,
+                                                                    initial_depth=self.mc_initial_depth,
+                                                                    play_depth=self.mc_play_depth,
+                                                                    main_player=self.sim_main_player,
                                                                     opponent=self.sim_opponent)
 
     def make_move(self, game):

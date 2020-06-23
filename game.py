@@ -112,7 +112,8 @@ class Game():
     def get_possible_moves(self):
         '''Return a list of the possible moves that can be taken by the active player in the current state.
         Behavior is undefined when the game is complete.
-        A single move can be anything (object, string, number, etc.).
+        A single move can be anything (object, string, number, etc.),
+        ...but it must be a valid move in any copy of the game as well.
         '''
         raise NotImplementedError
 
